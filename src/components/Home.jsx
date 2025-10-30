@@ -8,7 +8,7 @@ const Home = () => {
       <header className="fixed top-0 left-0 right-0 h-16 md:h-20 bg-white/95 backdrop-blur-md shadow-sm z-50">
         <div className="max-w-7xl mx-auto h-full flex items-center px-2 md:px-4">
           <Link to="/" className="flex items-center gap-3 -ml-20 md:-ml-24">
-            <div className="w-12 h-12 md:w-16 md:h-16 rounded-full overflow-hidden shadow-sm">
+            <div className="w-14 h-14 md:w-20 md:h-20 rounded-full overflow-hidden shadow-sm">
               <img src={new URL('../assets/photos/grill/logo.jpg', import.meta.url).href} alt="Logo" className="w-full h-full object-cover" />
             </div>
             <div>
@@ -19,8 +19,8 @@ const Home = () => {
 
         {/* Faculté block: positioned at the extreme right of the header, not circular, same visual size as left logo */}
         <div className="absolute right-3 md:right-6 top-1/2 transform -translate-y-1/2 flex items-center gap-3">
-          <div className="text-sm md:text-base font-medium text-gray-700">Faculté De Philosophie</div>
-          <div className="w-12 h-12 md:w-16 md:h-16 overflow-hidden shadow-sm">
+          <div className="text-sm md:text-base font-medium text-gray-700">Faculté de Philosophie</div>
+          <div className="w-14 h-14 md:w-20 md:h-20 overflow-hidden shadow-sm">
             <img src={new URL('../assets/photos/grill/faculte.png', import.meta.url).href} alt="Logo Faculté" className="w-full h-full object-cover" />
           </div>
         </div>
@@ -44,7 +44,7 @@ const Home = () => {
 
       {/* Galerie */}
       <div className="max-w-7xl mx-auto p-4">
-        <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-4">A la découverte de vos mentors.</h2>
+        <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 mb-4">Allons à  la découverte des parrains et marraines.</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
           {photos.map((photo) => (
             <Link

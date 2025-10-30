@@ -9,7 +9,7 @@ const Person = () => {
   // Map certain grid ids to alternative images in `individuel` (shuffled mapping).
   // You asked "pas dans l'ordre" — we map each grid id to a different individuel image.
   const individuelMap = {
-    '1': '8',
+    '1': '1',
     '2': '11',
     '3': '1',
     '4': '2',
@@ -64,10 +64,6 @@ const Person = () => {
       message: `« Bienvenue à l’UCAC ! Je vous encourage à persévérer, à vous épanouir dans vos études et à faire preuve de curiosité intellectuelle. Ensemble, nous allons explorer les idées qui nous animent. »`,
     },
 
-    '8': {
-      name: 'BIDOUA Brigitte Dorcas ',
-      message: `« La philosophie est un voyage intérieur avant d’être une discipline. Que chaque cours t’aide à mieux te connaître et à mieux comprendre le monde. »`,
-    },
 
     '9': {
       name: 'ZAZA Paul ',

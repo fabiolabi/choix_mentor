@@ -93,7 +93,7 @@ const Person = () => {
       message: `« Bienvenue à l'UCAC, bienvenue en faculté de philosophie, bienvenue dans ce Voyage épistémique. Merci pour la confiance, pour ta volonté et pour ton implication dans ce Voyage épistémique. Bon vent et bon courage. »`,
     },
     '12': {
-      name: 'RAOUL Olivier',
+      name: 'WOZA Yannick',
       message: `« Toujours questionner, toujours apprendre. Mon souhait est que vous trouviez dans l'étude de la philosophie les outils pour penser librement et agir avec responsabilité. »`,
     },
   };

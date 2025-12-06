@@ -1,4 +1,5 @@
 import { Link, useParams } from "react-router-dom";
+import { useState } from "react";
 import { photos } from "../data/photos";
 
 const Person = () => {
@@ -10,24 +11,33 @@ const Person = () => {
   // You asked "pas dans l'ordre" — we map each grid id to a different individuel image.
   const individuelMap = {
     '1': '1',
-    '2': '11',
+    // id 2 should map to both 11 and 9 — store as an array and pick one when rendering
+    '2': ['11', '9'],
     '3': '1',
     '4': '2',
     '5': '3',
     '6': '4',
-    '7': '5',
+  '7': ['5', '12'],
     '8': '6',
     '9': '7',
-    '10': '9',
+    '10': '8',
     '11': '10',
   };
 
-  let displaySrc = person?.src;
-  const altId = individuelMap[String(id)];
-  if (altId) {
-    displaySrc = new URL(`../assets/photos/individuel/${altId}.jpg`, import.meta.url).href;
+  // Resolve mapping: allow single id or array of ids. If array, show all images.
+  let altIds = individuelMap[String(id)];
+  if (!altIds) altIds = null;
+  if (altIds && !Array.isArray(altIds)) {
+    altIds = [String(altIds)];
   }
 
+  // Build display URLs: either the person's src or the individuel images
+  let displaySrcs = [];
+  if (altIds && altIds.length > 0) {
+    displaySrcs = altIds.map((a) => new URL(`../assets/photos/individuel/${a}.jpg`, import.meta.url).href);
+  } else if (person?.src) {
+    displaySrcs = [person.src];
+  }
   // Optional metadata for individuel images (override name/message when an individuel image is shown)
   const individuelMeta = {
     '1': {
@@ -63,7 +73,10 @@ const Person = () => {
       name: 'BALMA Etienne ',
       message: `« Bienvenue à l’UCAC ! Je vous encourage à persévérer, à vous épanouir dans vos études et à faire preuve de curiosité intellectuelle. Ensemble, nous allons explorer les idées qui nous animent. »`,
     },
-
+    '8': {
+      name: 'BIDOUA Brigitte Dorcas',
+      message: `« Accueillir la curiosité, cultiver la rigueur et partager la bienveillance : voilà ce que je souhaite pour chacun·e d'entre vous. Que votre parcours à l'UCAC soit riche en découvertes et en rencontres. »`,
+    },
 
     '9': {
       name: 'ZAZA Paul ',
@@ -79,11 +92,22 @@ const Person = () => {
       name: 'MIAKOUKANA Elohim ',
       message: `« Bienvenue à l'UCAC, bienvenue en faculté de philosophie, bienvenue dans ce Voyage épistémique. Merci pour la confiance, pour ta volonté et pour ton implication dans ce Voyage épistémique. Bon vent et bon courage. »`,
     },
+    '12': {
+      name: 'RAOUL Olivier',
+      message: `« Toujours questionner, toujours apprendre. Mon souhait est que vous trouviez dans l'étude de la philosophie les outils pour penser librement et agir avec responsabilité. »`,
+    },
   };
 
-  const altMeta = altId ? individuelMeta[altId] : null;
+  // When multiple individuel images exist, allow selecting which one to show details for
+  const [selectedIdx, setSelectedIdx] = useState(0);
+
+  // Determine the currently selected individuel id (if any)
+  const selectedAltId = altIds && altIds.length > 0 ? String(altIds[Math.min(selectedIdx, altIds.length - 1)]) : null;
+  const altMeta = selectedAltId ? individuelMeta[selectedAltId] : null;
   const displayName = altMeta?.name ?? person?.name;
   const displayMessage = altMeta?.message ?? person?.message;
+
+  
 
   if (!person) {
     return (
@@ -123,27 +147,61 @@ const Person = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           {/* Left: Image */}
           <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="w-full h-96 md:h-[32rem] bg-gray-100 flex items-center justify-center">
-              <img src={displaySrc} alt={displayName} className="max-h-full w-full object-contain p-4" />
-            </div>
+              <div className="w-full h-96 md:h-[32rem] bg-gray-100 flex items-center justify-center">
+                {displaySrcs.length === 1 ? (
+                  <img src={displaySrcs[0]} alt={displayName} className="max-h-full w-full object-contain p-4" />
+                ) : (
+                  <div className="w-full p-4 flex flex-col items-center">
+                    {/* Large selected image */}
+                    <div className="w-full flex items-center justify-center bg-white rounded-lg p-4 shadow-sm mb-4">
+                      <img
+                        src={displaySrcs[Math.min(selectedIdx, displaySrcs.length - 1)]}
+                        alt={`Sélection ${Math.min(selectedIdx, displaySrcs.length - 1) + 1}`}
+                        className="w-full max-h-72 md:max-h-[28rem] object-contain rounded"
+                      />
+                    </div>
+
+                    {/* Thumbnails row */}
+                    <div className="w-full flex gap-3 items-center justify-center flex-wrap">
+                      {displaySrcs.map((srcUrl, idx) => {
+                        const isSelected = idx === selectedIdx;
+                        return (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setSelectedIdx(idx)}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setSelectedIdx(idx); }}
+                            className={`inline-flex items-center justify-center rounded overflow-hidden bg-white ${isSelected ? 'ring-2 ring-indigo-300 scale-105' : 'border border-gray-100'} focus:outline-none`}
+                            aria-pressed={isSelected}
+                            aria-label={`Afficher l'image ${idx + 1}`}
+                          >
+                            <img src={srcUrl} alt={`Vignette ${idx + 1}`} className="w-20 h-20 object-cover" />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
           </div>
 
           {/* Right: Details */}
                 <div className="bg-gradient-to-br from-indigo-50 to-white rounded-lg shadow p-6 flex flex-col gap-4">
                   <div className="flex items-start gap-4">
                     <div className="flex-1">
+                      {/* Show the currently selected person's name (or the person name if single) */}
                       <h1 className="text-2xl md:text-3xl font-bold text-gray-800">{displayName}</h1>
                     </div>
                   </div>
 
                   <div>
                     <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">Message</h2>
-                    <div className="mt-3 p-5 rounded-lg bg-gray-50 border border-gray-100 text-gray-800 leading-relaxed">
-                      {displayMessage ? (
-                        <p className="whitespace-pre-line text-base">{displayMessage}</p>
-                      ) : (
-                        <p className="text-gray-500">Aucun message disponible.</p>
-                      )}
+                    <div className="mt-3">
+                      {/* Show only the message for the selected image (or the person's message) */}
+                      <div className="mt-3 p-5 rounded-lg bg-white border border-gray-200 shadow-sm text-gray-800 leading-relaxed">
+                        <h3 className="text-lg font-semibold text-gray-800">{displayName}</h3>
+                        <div className="mt-2 text-sm whitespace-pre-line">{displayMessage ?? 'Aucun message disponible.'}</div>
+                      </div>
                     </div>
                   </div>
                 </div>
